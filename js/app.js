@@ -3,6 +3,12 @@ var operandoa;
 var operandob;
 var operacion;
 var contador=0;
+var contador_signo=0;
+var contador_respuesta=0;
+var contador_igual = 0;
+var aux_operando=0;
+var aux_igual=0;
+var aux_operacion="";
 
 function init(){
   //variables
@@ -209,6 +215,7 @@ function init(){
   };
 
   nueve.onclick = function(e){
+
   	if(resultado.textContent == 0)
       {
       	resultado.textContent = "9";
@@ -231,6 +238,7 @@ function init(){
   };
 
   cero.onclick = function(e){
+     
   	if(resultado.textContent == 0)
       {
       	resultado.textContent = "0";
@@ -253,6 +261,9 @@ function init(){
   };
 
   reset.onclick = function(e){
+      aux_operando=0;
+      aux_igual=0;
+      aux_operacion=0;
       resetear(resultado);
   }
 
@@ -271,9 +282,20 @@ function init(){
 
 
   suma.onclick = function(e){
+
+    if(resultado.textContent == 0)
+      {
+        resultado.textContent = "0";
+      }else{
+      
+      if(contador_respuesta==1){
+        contador_respuesta=0;  
+      }
+
       operandoa = resultado.textContent;
       operacion = "+";
       limpiar(resultado);
+      }  
   }
 
   suma.onmouseup = function(e) {
@@ -290,9 +312,20 @@ function init(){
   };
 
   resta.onclick = function(e){
+      
+      if(resultado.textContent == 0)
+      {
+        resultado.textContent = "0";
+      }else{
+
+        if(contador_respuesta==1){
+          contador_respuesta=0;  
+        }
       operandoa = resultado.textContent;
       operacion = "-";
       limpiar(resultado);
+      }
+
   }
 
   resta.onmouseup = function(e) {
@@ -309,9 +342,20 @@ function init(){
   };
 
   multiplicacion.onclick = function(e){
+
+      if(resultado.textContent == 0)
+      {
+        resultado.textContent = "0";
+      }else{
+
+        if(contador_respuesta==1){
+        contador_respuesta=0;  
+        }
       operandoa = resultado.textContent;
       operacion = "*";
       limpiar(resultado);
+      }
+     
   }
 
   multiplicacion.onmouseup = function(e) {
@@ -328,9 +372,18 @@ function init(){
   };
 
   division.onclick = function(e){
-      operandoa = resultado.textContent;
-      operacion = "/";
-      limpiar(resultado);
+
+      if(resultado.textContent == 0)
+      {
+        resultado.textContent = "0";
+      }else{
+        if(contador_respuesta==1){
+        contador_respuesta=0;  
+        }
+        operandoa = resultado.textContent;
+        operacion = "/";
+        limpiar(resultado);
+      }     
   }
 
   division.onmouseup = function(e) {
@@ -350,12 +403,22 @@ function init(){
 
     if(resultado.textContent == 0)
       {
-        resultado.textContent = "0";
+        resultado.textContent = 0;
       }else{
 
        if(contador == 0){
-         resultado.textContent = resultado.textContent + ".";
-         contador++; 
+         
+         if(contador_respuesta==0){
+           resultado.textContent = resultado.textContent + ".";
+           contador++; 
+         }else if(contador_respuesta == 1){
+          if (resultado.textContent % 1 == 0) {
+          resultado.textContent = resultado.textContent + ".";
+          } else {
+          }
+
+         }
+         
        }
          
       }
@@ -376,7 +439,12 @@ function init(){
 
   igual.onclick = function(e){
       operandob = resultado.textContent;
-      resolver(operacion, operandoa, operandob, resultado);
+      if(aux_igual==0){
+        aux_igual = 1;
+        aux_operando=operandob
+        aux_operacion=operacion;
+      }
+      resolver(operacion, operandoa, operandob, resultado,aux_operando, aux_operacion);
   }
 
   igual.onmouseup = function(e) {
@@ -395,13 +463,17 @@ function init(){
   signo.onclick = function(e){
      if(resultado.textContent == 0)
       {
-        resultado.textContent = "-";
+        resultado.textContent = "0";
       }else{
-        if(contador==0){
+        if(contador_signo==0){
           resultado.textContent = "-"+resultado.textContent; 
-          contador++;
+          contador_signo++;
         }else{
-          resultado.textContent = "0";
+          if(operacion == "*" || operacion == "+" || operacion == "-" || operacion == "/"){
+             resultado.textContent = "-"+resultado.textContent; 
+          }else{
+            resultado.textContent = "0";
+          }
         }
       }
   }
@@ -439,7 +511,7 @@ function init(){
 
 function limpiar(resultado){
   resultado.textContent = "";
-  contador=0;
+  //contador=0;
 }
 
 function resetear(resultado){
@@ -447,13 +519,50 @@ function resetear(resultado){
   operandoa = 0;
   operandob = 0;
   contador = 0;
+  contador_signo=0;
+  contador_respuesta=0;
   operacion = "";
 }
 
-function resolver(operacion, operandoa, operandob, resultado){
+function resolver(operacion, operandoa, operandob, resultado, aux_operando, aux_operacion){
+  var res=0;
+  
+  if(contador_respuesta == 1){
+    if(resultado.textContent == 0){
+    alert(resultado.textContent);
+    contador_igual="0";
+    }else{
+    alert(aux_operacion);
+    switch(aux_operacion){
+    case "+":
+      res = parseFloat(resultado.textContent) + parseFloat(aux_operando);
+      
+      break;
+    case "-":
+        res = parseFloat(resultado.textContent) - parseFloat(aux_operando);
+        
+        break;
+    case "*":
+      res = parseFloat(resultado.textContent) * parseFloat(aux_operando);
 
-  var res = 0;
-  switch(operacion){
+          if (resultado.textContent % 1 == 0) {
+         
+          } else {
+          res =  res.toFixed(6);
+          } 
+      break;
+    case "/":
+      res = parseFloat(resultado.textContent) / parseFloat(aux_operando);
+       if (resultado.textContent % 1 == 0) {   
+          } else {
+          res =  res.toFixed(6);
+          } 
+      }
+       aux_operando=""; 
+       resultado.textContent = res;  
+    }
+  }else if (contador_respuesta == 0){
+    switch(operacion){
     case "+":
       res = parseFloat(operandoa) + parseFloat(operandob);
       
@@ -464,23 +573,33 @@ function resolver(operacion, operandoa, operandob, resultado){
         break;
     case "*":
       res = parseFloat(operandoa) * parseFloat(operandob);
-      res =  res.toFixed(6);
+
+          if (resultado.textContent % 1 == 0) {
+         
+          } else {
+          res =  res.toFixed(6);
+          } 
       break;
     case "/":
       res = parseFloat(operandoa) / parseFloat(operandob);
-      res =  res.toFixed(6);
-      break;
+       if (resultado.textContent % 1 == 0) {   
+          } else {
+          res =  res.toFixed(6);
+          } 
+      
+    }
+    resetear(resultado);
+    contador_respuesta = 1;
+    resultado.textContent = res;
+
   }
-  resetear(resultado);
-
-  resultado.textContent = res;
-
 }
 
 function cambiaTamanio(uno){
   uno.width = 200;
   uno.height = 200;
 }
+
 }
 window.onload = init;
 
