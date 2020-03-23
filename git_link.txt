@@ -1,1 +1,1 @@
-https://github.com/omarking/nextu_javascript.git
+https://github.com/omarking/examen_nextu_javascript.git
